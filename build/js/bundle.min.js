@@ -1,7 +1,42 @@
+let pagina = 1;
+
 document.addEventListener('DOMContentLoaded', function() {
     iniciarApp();
 
+    // Resalta el div actual
+    mostrarSeccion();
+
+    //Oculta/muestra la funcion segun el tab
+    cambiarSeccion();
 })
+
+function mostrarSeccion(){
+    const seccionActual = document.querySelector(`#paso_${pagina}`);
+    seccionActual.classList.add('mostrar-seccion');
+
+    //resalta el tab actual
+    document.querySelector(`[data-paso="${pagina}"]`).classList.add('tab-actual');
+}
+
+function cambiarSeccion() {
+    const enlaces = document.querySelectorAll('.tabs button');
+    enlaces.forEach(enlace => {
+        enlace.addEventListener('click', e => {
+            e.preventDefault();
+            pagina = parseInt(e.target.dataset.paso);
+            
+            //Ocultar seccion anterior
+            document.querySelector('.mostrar-seccion').classList.remove('mostrar-seccion');
+            document.querySelector('.tab-actual').classList.remove('tab-actual');
+            //Mostrar seccion elegida
+
+            const seccion = document.querySelector(`#paso_${pagina}`);
+            seccion.classList.add('mostrar-seccion');
+            document.querySelector(`[data-paso="${pagina}"]`).classList.add('tab-actual');
+            
+        })
+    })
+}
 
 function iniciarApp() {
     mostrarServicios();
@@ -49,7 +84,9 @@ async function mostrarServicios() {
 
                 if(elemento.classList.contains('seleccionado')) {
                     elemento.classList.remove('seleccionado');
-                } else {elemento.classList.add('seleccionado');}
+                } else {
+                    elemento.classList.add('seleccionado');
+                }
 
                 console.log(elemento.dataset.idServicio);
                 

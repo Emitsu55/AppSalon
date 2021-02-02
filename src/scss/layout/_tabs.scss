@@ -11,5 +11,9 @@
         &:hover {
             cursor: pointer;
         }
+        &.tab-actual {
+            background-color: $azul;
+            color: $blanco;
+        }
     }
 }

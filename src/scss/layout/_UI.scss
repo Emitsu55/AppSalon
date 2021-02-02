@@ -32,10 +32,11 @@ body {
 }
 
 .seccion {
-    
     display: none;
-    &:first-of-type {
-        display: block;
-    }
-    margin-top: $separacion/2;
+    margin-top: $separacion/2; 
 }
+
+.mostrar-seccion {
+    display: block!important;
+}
+
