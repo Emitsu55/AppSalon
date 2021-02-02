@@ -10,6 +10,10 @@ body {
         height: 100vh;
     }
 
+    h1 {
+        margin-top: $separacion/2;
+    }
+
     .imagen {
         background-image: url(../img/1.jpg);
         background-size: cover;
@@ -25,4 +29,13 @@ body {
 .app {
     width: 95%;
     margin: 0 auto;
+}
+
+.seccion {
+    
+    display: none;
+    &:first-of-type {
+        display: block;
+    }
+    margin-top: $separacion/2;
 }

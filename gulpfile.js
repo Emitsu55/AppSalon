@@ -34,7 +34,7 @@ function javascript() {
     return src(paths.js)
       .pipe(sourcemaps.init())
       .pipe(concat('bundle.js')) // final output file name
-      .pipe(terser())
+    //   .pipe(terser())
       .pipe(sourcemaps.write('.'))
       .pipe(rename({ suffix: '.min' }))
       .pipe(dest('./build/js'))
