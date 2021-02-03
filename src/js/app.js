@@ -6,16 +6,37 @@ document.addEventListener('DOMContentLoaded', function() {
     // Resalta el div actual
     mostrarSeccion();
 
-    //Oculta/muestra la funcion segun el tab
+    //muestra la funcion segun el tab
     cambiarSeccion();
+
+    // paginacion 
+    paginaSiguiente();
+    paginaAnterior();
+
+    //Comprueba la pagina actual para ocultar paginacion
+    botonesPaginador();
 })
 
 function mostrarSeccion(){
+   
+    // ocultar la seccion anterior 
+    const seccionAnterior = document.querySelector('.mostrar-seccion');
+    if(seccionAnterior) {
+        seccionAnterior.classList.remove('mostrar-seccion');
+    }
+    const tabAnterior = document.querySelector('.tab-actual');
+    if(tabAnterior) {
+        tabAnterior.classList.remove('tab-actual');
+    }
+
+    //Mostrar seccion
     const seccionActual = document.querySelector(`#paso_${pagina}`);
     seccionActual.classList.add('mostrar-seccion');
 
-    //resalta el tab actual
+    //resaltar el tab actual
     document.querySelector(`[data-paso="${pagina}"]`).classList.add('tab-actual');
+ 
+    
 }
 
 function cambiarSeccion() {
@@ -24,19 +45,56 @@ function cambiarSeccion() {
         enlace.addEventListener('click', e => {
             e.preventDefault();
             pagina = parseInt(e.target.dataset.paso);
-            
-            //Ocultar seccion anterior
-            document.querySelector('.mostrar-seccion').classList.remove('mostrar-seccion');
-            document.querySelector('.tab-actual').classList.remove('tab-actual');
+
             //Mostrar seccion elegida
 
-            const seccion = document.querySelector(`#paso_${pagina}`);
-            seccion.classList.add('mostrar-seccion');
-            document.querySelector(`[data-paso="${pagina}"]`).classList.add('tab-actual');
+            mostrarSeccion();
+            botonesPaginador();
             
         })
     })
 }
+
+function botonesPaginador(){
+    const paginaSiguiente = document.querySelector('#siguiente');
+    const paginaAnterior = document.querySelector('#anterior');
+    if(pagina === 1) {
+        paginaAnterior.classList.add('ocultar');
+        paginaSiguiente.classList.remove('ocultar');
+    } else if(pagina === 3) {
+        paginaSiguiente.classList.add('ocultar');
+        paginaAnterior.classList.remove('ocultar');
+    }  else {
+        document.querySelector('.ocultar').classList.remove('ocultar');
+    } 
+    mostrarSeccion();
+}
+
+function paginaSiguiente() {
+    const paginaSiguiente = document.querySelector('#siguiente');
+    paginaSiguiente.addEventListener('click', e => {
+            pagina++;
+            botonesPaginador();
+    });
+
+}
+
+function paginaAnterior() {
+    const paginaAnterior = document.querySelector('#anterior');
+    paginaAnterior.addEventListener('click', e => {
+        pagina--;
+        botonesPaginador();
+
+    });
+}
+
+
+
+
+
+
+
+
 
 function iniciarApp() {
     mostrarServicios();
