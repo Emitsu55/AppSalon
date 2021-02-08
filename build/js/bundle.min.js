@@ -1,5 +1,5 @@
 //variables globales
-    
+
 let pagina = 1;
 
 const cita = {
@@ -9,7 +9,7 @@ const cita = {
     servicios: []
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     iniciarApp();
 
     // Resalta el div actual
@@ -27,18 +27,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Muestra el resumen de la cita o mensaje de error
     mostrarResumen();
+
+    //Almacenar el nombre de la cita en el objeto
+    nombreCita();
+
+    //almacenar fecha en el objeto
+
+    fechaCita();
+
+    // dessabilitar fecha anterior 
+    desabilitarFechaAnterior();
+
+    //alamacenar hora en objeto
+
+    horaCita();
 })
 
 //Funcion que muestra la seccion en la que te encontras
-function mostrarSeccion(){
-   
+function mostrarSeccion() {
+
     // ocultar la seccion anterior 
     const seccionAnterior = document.querySelector('.mostrar-seccion');
-    if(seccionAnterior) {
+    if (seccionAnterior) {
         seccionAnterior.classList.remove('mostrar-seccion');
     }
     const tabAnterior = document.querySelector('.tab-actual');
-    if(tabAnterior) {
+    if (tabAnterior) {
         tabAnterior.classList.remove('tab-actual');
     }
 
@@ -48,8 +62,8 @@ function mostrarSeccion(){
 
     //resaltar el tab actual
     document.querySelector(`[data-paso="${pagina}"]`).classList.add('tab-actual');
- 
-    
+
+
 }
 
 //Funcion que oculta la seccion anterior y muestra la actual
@@ -64,24 +78,27 @@ function cambiarSeccion() {
 
             mostrarSeccion();
             botonesPaginador();
-            
+
         })
     })
 }
 
 //Funcion que coloca los botones correspondientes de la paginacion
-function botonesPaginador(){
+function botonesPaginador() {
     const paginaSiguiente = document.querySelector('#siguiente');
     const paginaAnterior = document.querySelector('#anterior');
-    if(pagina === 1) {
+    if (pagina === 1) {
         paginaAnterior.classList.add('ocultar');
         paginaSiguiente.classList.remove('ocultar');
-    } else if(pagina === 3) {
+    } else if (pagina === 3) {
         paginaSiguiente.classList.add('ocultar');
         paginaAnterior.classList.remove('ocultar');
-    }  else {
+        
+        //Actulizar la pagina de resumen
+        mostrarResumen();
+    } else {
         document.querySelector('.ocultar').classList.remove('ocultar');
-    } 
+    }
     mostrarSeccion();
 }
 
@@ -89,8 +106,8 @@ function botonesPaginador(){
 function paginaSiguiente() {
     const paginaSiguiente = document.querySelector('#siguiente');
     paginaSiguiente.addEventListener('click', e => {
-            pagina++;
-            botonesPaginador();
+        pagina++;
+        botonesPaginador();
     });
 
 }
@@ -112,26 +129,138 @@ function mostrarResumen() {
     const { nombre, fecha, hora, servicios } = cita;
 
     //selector resumen
-    const resumenDiv = document.querySelector('.contenido-resumen'); 
+    const resumenDiv = document.querySelector('.contenido-resumen');
 
     // validacion del objeto
-    if(Object.values(cita).includes('')) {
+    if (Object.values(cita).includes('')) {
         const faltanDatos = document.createElement('P');
         faltanDatos.textContent = 'Falta completar algunos campos.';
         faltanDatos.classList.add('invalidar-cita');
-           
+
         //Inyectar en el div
-        resumenDiv.appendChild(faltanDatos); 
+        resumenDiv.appendChild(faltanDatos);
+    } else {
+        console.log('Datos todo bien');
     }
 
 
+}
+
+//Cargar los datos de la cita
+
+
+function nombreCita() {
+    const nombreInput = document.querySelector('#nombre');
+    nombreInput.addEventListener('input', e => {
+        const nombreTexto = e.target.value.trim(); //trim elimina espacios blancos al inicio y final
+
+        //Validacion contenido
+        if (nombreTexto === '' || nombreTexto.length < 3) {
+
+            mostrarAlerta('nombre invalido', 'error');
+
+        } else {
+            const alerta = document.querySelector('.alerta');
+            if(alerta) {
+                alerta.remove();
+            }
+            cita.nombre = nombreTexto
+        }
+        
+    })
+}
+
+function desabilitarFechaAnterior() {
+    const fechaInput = document.querySelector('#fecha');
+    const fechaActual = new Date();
+    const year = fechaActual.getFullYear();
+    const mes = fechaActual.getMonth() + 1;
+    const dia = fechaActual.getDate() + 1;
+    //formato deseado AAAA-MM-DD
+
+    const fechaDesabilitar = `${year}-${mes < 10 ? `0${mes}` : mes}-${dia < 10 ? `0${dia}` : dia}`;
+    
+    //Agregar la fecha a desabilitar
+    fechaInput.min = fechaDesabilitar;
+}
+
+function fechaCita() {
+    const fechaInput = document.querySelector('#fecha');
+    fechaInput.addEventListener('input', e => {
+        const fecha = new Date(e.target.value).getUTCDay();
+       
+
+        if([0, 6].includes(fecha)) {
+            e.preventDefault();
+            fechaInput.value = '';
+            mostrarAlerta('El establecimiento no abre fines de semana.', 'error');
+        } else {
+            cita.fecha = fechaInput.value; 
+            
+        }
+
+        /*
+        const opciones = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long'
+        }
+        console.log(fecha.toLocaleDateString('es-ES', opciones));
+        */
+    })
+}
+
+function horaCita() {
+    const inputHora = document.querySelector('#hora');
+    inputHora.addEventListener('input', e => {
+        const horaCita = e.target.value
+        const hora = horaCita.split(':'); //split me lo convierte en un array dividiendo con lo que yo le pida
+        
+        if(hora[0] < 10 || hora[0] > 20) {
+            mostrarAlerta('El horario de atención es de 10:00 a 20:00.', 'error');
+            setTimeout(() => {
+                inputHora.value = '';
+            }, 3000);
+        } else {
+            cita.hora = horaCita;
+        }
+        
+        
+    });
 }
 
 
 
 
 
+function mostrarAlerta(mensaje, tipoAlerta) {
 
+
+    //Checkear si hay una alerta previa
+    const alertaPrevia = document.querySelector('.alerta');
+    if (alertaPrevia) {
+        return;
+    }
+
+    //Crear la alerta
+    const alerta = document.createElement('DIV');
+    alerta.textContent = mensaje;
+    //Asignarle sus clases
+    alerta.classList.add('alerta');
+    if (tipoAlerta === 'error') {
+        alerta.classList.add('error');
+    }
+
+    //Inyectar la alerta en el html
+    const formulario = document.querySelector('.formulario');
+    formulario.appendChild(alerta);
+
+    // Eliminar la alerta
+    setTimeout(() => {alerta.remove();}, 3000)
+
+
+
+}
 
 function iniciarApp() {
     mostrarServicios();
@@ -141,11 +270,11 @@ async function mostrarServicios() {
     try {
         const resultado = await fetch('./servicios.json');
         const db = await resultado.json();
-        
 
-        const {servicios} = db;  
+
+        const { servicios } = db;
         servicios.forEach(servicio => {
-            const {id, nombre, precio} = servicio;
+            const { id, nombre, precio } = servicio;
 
             //Dom scripting
             const nombreServicio = document.createElement('P');
@@ -169,31 +298,60 @@ async function mostrarServicios() {
             botonServ.appendChild(precioServicio);
             function seleccionarServicio(e) {
                 let elemento;
-                if(e.target.tagName === 'P') {
+                if (e.target.tagName === 'P') {
                     elemento = e.target.parentElement;
-                    
+
 
                 } else {
-                   elemento = e.target;
+                    elemento = e.target;
                 }
 
-                if(elemento.classList.contains('seleccionado')) {
+                if (elemento.classList.contains('seleccionado')) {
                     elemento.classList.remove('seleccionado');
+
+                    //eliminar el servicio
+                    const id = parseInt(elemento.dataset.idServicio);
+                    eliminarServicio(id);
                 } else {
                     elemento.classList.add('seleccionado');
+
+
+                    const servicioObj = {
+                        id: parseInt(elemento.dataset.idServicio),
+                        nombre: elemento.firstElementChild.textContent,
+                        precio: elemento.firstElementChild.nextElementSibling.textContent
+                    }
+
+
+                    agregarServicio(servicioObj);
                 }
 
-                console.log(elemento.dataset.idServicio);
+                
+
+
+
+            }
+
+            function eliminarServicio(id) {
+
+                const { servicios } = cita;
+                cita.servicios = servicios.filter(servicio => servicio.id !== id);
+            }
+
+            function agregarServicio(objeto) {
+                const { servicios } = cita;
+
+                cita.servicios = [...servicios, objeto];
                 
             }
 
             //Inyectar en el html 
             document.querySelector('#servicios').appendChild(botonServ);
 
-            
+
         });
 
-    } catch(error) {
+    } catch (error) {
         console.log(error);
     }
 

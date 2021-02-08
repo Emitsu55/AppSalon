@@ -29,3 +29,16 @@
         }
     }
 }
+
+.alerta {
+    text-align: center;
+    width: 100%;
+    display: block;
+    text-transform: uppercase;
+    padding: $separacion/4;
+    color: $blanco;
+    &.error {
+        background-color: rgba(255, 0, 0, 0.466);
+    }
+}
+
