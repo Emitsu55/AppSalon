@@ -4,11 +4,18 @@
     padding: $separacion/2;
     button {
         border: none;
-        padding: $separacion/4 $separacion;
+        padding: $separacion/4;
         background-color: $azul;
         color: $blanco;
         font-weight: $bold;
         text-transform: uppercase;
+        font-size: 1rem;
+
+        @include tablet {
+            padding:  $separacion/4 $separacion;
+            font-size: 1.6rem;
+        }
+        
 
         &:hover {
             cursor: pointer;
@@ -19,4 +26,5 @@
         }
     }
 }
+
 

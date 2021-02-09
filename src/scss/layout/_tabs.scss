@@ -1,5 +1,9 @@
 .tabs {
-    @include grid(3,$separacion/6);
+    display: flex;
+    flex-direction: column;
+    @include tablet {
+        @include grid(3,$separacion/6);
+    }
     button {
         background-color: $blanco;
         font-size: 1.4rem;
