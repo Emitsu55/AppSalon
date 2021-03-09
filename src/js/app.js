@@ -345,12 +345,15 @@ function iniciarApp() {
 
 async function mostrarServicios() {
     try {
-        const resultado = await fetch('./servicios.json');
+
+        const url = 'http://localhost:3000/Udemy/desarrolloWeb/php/AppSalon/servicios.php'
+
+        const resultado = await fetch(url);
         const db = await resultado.json();
 
 
-        const { servicios } = db;
-        servicios.forEach(servicio => {
+        // const { servicios } = db;
+        db.forEach(servicio => {
             const { id, nombre, precio } = servicio;
 
             //Dom scripting
